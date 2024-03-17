@@ -19,7 +19,7 @@ const String TELEMETRY_HANDLER_PATH = "/telemetry.php?";
 const String DATA_HANDLER_PATH      = "/store_data.php?";
 
  const String STATION_ID        = "st00"; /* Psachna */
-// const String STATION_ID        = "st01";  /* Athens
+// const String STATION_ID        = "st01";  /* Athens */
 // const String STATION_ID        = "st02"; /* Unlocated */
 
 // constants
