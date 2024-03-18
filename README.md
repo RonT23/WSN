@@ -33,6 +33,7 @@ Figure 1 depicts the architecture of the monitoring units and Table 1 contains t
 | Wind Direction|      -          |      22.5 [deg]      |    Wind Vane      |
 
 ![Alt text](./img/figure_1.png)
+
 **Figure 1** - The monitoring system architecture
 
 ## The proposed server structure
@@ -51,6 +52,7 @@ Each weather station is a self-contained unit which communicates remotely with a
 | telemetry    |  handles TM packets coming from stations               |
 
 ![Alt text](./img/figure_2.png)
+
 **Figure 2** - The backend system architectrue
 
 ## The proposed server organization
@@ -96,7 +98,23 @@ Each weather station is a self-contained unit which communicates remotely with a
 
 ## Training an LSTM network for short-range forecasting
 
-![Alt Figure 3 - The LSTM cell architecture](./img/figure_3.png)
+LSTM networks are specialized variant of RNN known for their distinctive ability to capture long term dependencies and expose intricate patterns within sequential data efficiently. Figure 3 depicts the computational graph illustrating the internal architecture of an LSTM unit (or cell). Bellow we describe briefly how the LSTM network can be used to predict the outcome on a given time-step. 
+
+![Alt text](./img/figure_3.png)
+
+**Figure 3** - The LSTM cell architecture
+
+Lets consider an input sequence `X = [x1, x2, ..., xn]`, where `x1, x2, ..., xn` are the `n` sequential samples/ measurements of a variable of interest (e.g. temperature). The target here is to utilize historical instances `x1, x2, ..., xm` to predict the `k-th` instance `xm+k`. Therefore the LSTM network must extract and learn the relation between the historical instances and the target time-step. The first step consists of creating a training dataset `Xt = [[x1, x2, ..., xm], [x2, x3, ...,xm+1], ... ]` where each input sequence `[x1, x2, ..., xm], [x2, x3, ..., xm+1] ...` leads to the `k-th` time-step value, `Yt = [xm+k, xm+1+k, ...]`. 
+
+Before using the pairs `(Xt(i), Yt(i))` to train the model, the values must be normalized, since LSTMs cannot easily handle large numbers, especially when multiple features are used with different scales. There are many techniques to normalize data. 
+
+The normalized data are then used to train the LSTM model for several epochs. In training state each instance is passed through the different LSTM processing components (gates) producing a prediction. The predicted value is then compared with the actual expected value and the calculated loss is utilized to update the weights of each gate. For more information on how the LSTM cell operates and how it is trained for the problem of short-range weather forecasting please refer to `docs/meteo_station - LSTM predictors - V1.pdf`. 
+
+Once the LSTM is trained we can use it to predict the variable(s) of interest in real applications by feeding it with actual measurements. Once we accumulate `m` data samples we can start making predictions for `m+k` time-steps in advance. From that point on predictions are contiguous. Every time a new measurement is produced the historical data is shifted by one sample forward including the new measurement and the `m+k+1` time-step is predicted.
+
+To train and evaluate an LSTM network for the task of predicting the values of temperature, humidity, pressure and wind speed you can use the `notebook/lstm-training.ipynb`. By changing the parameter `timesteps` you can alter the look-back window (number of historical data samples to use) and by changing the `window` you can alter the look-forward window (number of time-steps to predict in future). 
+
+You can contact us for a complete meteorological dataset, or you can change the notebook to support your own dataset. 
 
 ## Integrating the LSTM model 
 
