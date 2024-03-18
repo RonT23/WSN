@@ -1,0 +1,63 @@
+{% extends 'Base.html' %}
+{% load static%}
+{% block title %}{% endblock %}
+
+{% block content %}
+{% if messages %}
+    <ul class="messages" id="messagesContainer">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+	  
+	  <script>
+        // Wait for 5 seconds (5000 milliseconds) and then fade out or remove messages
+        setTimeout(function() {
+            fadeOutOrRemoveMessages();
+        }, 500);
+
+        function fadeOutOrRemoveMessages() {
+            var messagesContainer = document.getElementById('messagesContainer');
+
+            // Add a class to trigger the fade-out effect 
+            messagesContainer.classList.add('fade-out');
+
+            // After the fade-out animation duration, remove the messages from the DOM
+            setTimeout(function() {
+                messagesContainer.parentNode.removeChild(messagesContainer);
+            }, 3000); 
+        }
+    </script>
+{% endif %}
+
+<div id="map">{{ map | safe }}</div>
+<div>
+  <div class="navbar">
+      <ui>
+        <a href="" >Download</a>
+        <a href="#" id="Stations_admin">Stations</a>
+        <a href="#" id="users_admin">Users</a>
+        <!--<a href="#" id="Statistics_admin">Statistics</a> -->
+        <a href="{% url 'logout' %}">logout</a>
+      </ui>
+  </div>
+  
+  <div id="panel">
+    <div>
+      &nbsp;
+      <form class ="admin_form" method="POST">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <button class='dl_b' type="submit" >Download</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Update fuction -->
+<script>
+    updateFormChoices();
+    setTimeout(function() {location.reload();}, 5*60*1000); 
+</script>
+
+{% endblock %}

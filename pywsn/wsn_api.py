@@ -23,16 +23,16 @@ class Weather_Station_Backend_Controller:
 
     def get_data(self, station_id):
         '''
-            This function reads the daily data collected by a specific station. 
+            This function reads the daily data collected by a specific station.
             The return value is a pandas dataframe with the aforementioned data recordings.
             The features are:
-            Date (UTM-Date YYYY-MM-DD), 
+            Date (UTM-Date YYYY-MM-DD),
             Time(UTM-time HH:mm:ss),
-            Temperature (float64), 
+            Temperature (float64),
             Humidity (float64), P
             ressure (float64)
-            Wind_Speed (float64), 
-            Wind_Direction (float64), 
+            Wind_Speed (float64),
+            Wind_Direction (float64),
             Rainfall (float64)
 
             @station_id : the unique station identifier of the form stxx
@@ -57,15 +57,15 @@ class Weather_Station_Backend_Controller:
 
     def get_stats(self, station_id):
         '''
-            This function reads the statistics on daily basis. 
-            The return values are three pandas dataframe and one float64 single value. 
-            The three pandas dataframe contain the minimum, the maximum and the average of the daily weather values recorded. 
+            This function reads the statistics on daily basis.
+            The return values are three pandas dataframe and one float64 single value.
+            The three pandas dataframe contain the minimum, the maximum and the average of the daily weather values recorded.
             The float64 refers to the ccumulated rainfall.
             Each pandas dataframe contain values that refere to the features:
             Temperature (float64), Humidity (float64), Pressure (float64),
             Wind_Speed (float64), Rainfall (float64)
-            
-            @station_id : the unique station identifier 
+
+            @station_id : the unique station identifier
         '''
         response = requests.post(self.url_stats+f'&st={station_id}')
 
@@ -90,16 +90,16 @@ class Weather_Station_Backend_Controller:
 
     def get_telemetry(self, station_id):
         '''
-            This function reads the telemetry for every station. 
-            The return value is a pandas dataframe containing the telemetry data. 
+            This function reads the telemetry for every station.
+            The return value is a pandas dataframe containing the telemetry data.
             The features are:
-            Date (UTM-Date YYYY-MM-DD), 
-            Time (UTM-Time HH:mm:ss), 
-            Internal Temperature (float64), 
+            Date (UTM-Date YYYY-MM-DD),
+            Time (UTM-Time HH:mm:ss),
+            Internal Temperature (float64),
             Bus Voltage (float64)
-            Bus Current (float64), 
-            Solar_Voltage (float64), 
-            Heartbeat (unsigned int), 
+            Bus Current (float64),
+            Solar_Voltage (float64),
+            Heartbeat (unsigned int),
             Mode (unsigned int)
         '''
         response = requests.post(self.url_telemFile+f'telemetry_{station_id}')
@@ -112,7 +112,7 @@ class Weather_Station_Backend_Controller:
         telem_data_df['Bus_Voltage'] = round(float(telem_data_df['Bus_Voltage'][0]), 2)
         telem_data_df['Bus_Current'] = round(float(telem_data_df['Bus_Current'][0]), 2)
         telem_data_df['Solar_Voltage'] = round(float(telem_data_df['Solar_Voltage'][0]), 2)
-        
+
         return telem_data_df
 
 
@@ -120,15 +120,15 @@ class Weather_Station_Backend_Controller:
         '''
             The function creates a dataset of choise between two given dates.
             The return value is the number of recordings that fit to the given
-            dates and a pandas data frame with the exact recordings. 
+            dates and a pandas data frame with the exact recordings.
             The features contained are:
-            Date (UTM-Date YYYY-MM-DD), 
+            Date (UTM-Date YYYY-MM-DD),
             Time(UTM-time HH:mm:ss),
-            Temperature (float64), 
-            Humidity (float64), 
+            Temperature (float64),
+            Humidity (float64),
             Pressure (float64)
-            Wind_Speed (float64), 
-            Wind_Direction (float64), 
+            Wind_Speed (float64),
+            Wind_Direction (float64),
             Rainfall (float64)
 
             @station_id : the unique station identifier
@@ -165,7 +165,7 @@ class Weather_Station_Backend_Controller:
         '''
             This function sets a command for the target station to execute. Commands are
             executed asynchronously
-            
+
             command_id |  argument  |  action
             ----------------------------------
                 0      |     0      | reset
@@ -177,9 +177,9 @@ class Weather_Station_Backend_Controller:
                 2      |     1      | init
 
             When the transmission is valid an OK (200) signal will be returned
-            
+
             @station_id : the unique station identifier
-            @command_id : the commands identifier to trigger 
+            @command_id : the commands identifier to trigger
             @argument   : the argument passed to the command trigger
         '''
         response = requests.post(self.url_cmdTX+f'&id={station_id}&cmd={command_id}&arg={argument}')

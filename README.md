@@ -117,15 +117,80 @@ You can contact us for a complete meteorological dataset, or you can properly mo
 
 ## Creating a Django application
 
-Here we present the steps required to create a web-based user interface application using the Django Python framework (https://www.djangoproject.com/). Once you complete these steps the result will be an interactive web-based graphical user interface for visualizing real-time meteorological data and short-range weather forecasts as depicted in Figure 5. 
+Here we present the steps required to re-create our web-based user interface application using the Django Python framework (https://www.djangoproject.com/). Once you complete these steps the result will be an interactive web-based graphical user interface for visualizing real-time meteorological data and short-range weather forecasts as depicted in Figure 5. However it should be noted that you must create a backend and monitoring system as predefined in order to see actual data in your application!
 
 ![Alt text](./img/figure_5.png)
 
 **Figure 5** - The UOA WSN real-time monitoring and short-range forecasting web-gui
 
-### Integrating the pyWSN package
+### Create a Python virtual environment for the project and install the required python packages
 
-### Integrating the LSTM model 
+A basic requirement is that you have locally installed python3. It is recommended to use python environments however you can execute all of the following steps outside it as well.
+
+```
+    sudo apt-get install python3-pip
+    sudo apt-get install python3-virtualenv
+
+    # create the virtual environment
+    virtualenv django-venv
+
+    # activate the environment
+    source ./django-vevn/bin/activate
+
+    pip3 install folium 
+    pip3 install pandas
+    pip3 install django
+    pip3 install keras==3.0.5
+    pip3 install datetime
+    pip3 install plotly
+    pip3 install requests
+    pip3 install tensorflow
+```
+
+### Create a Django project and configure the application
+
+```
+    # start a new Django project and name it 'wsn'
+    django-admin startproject wsn
+    cd wsn
+    
+    # create a new application named 'wsn_app'
+    python3 manage.py startapp wsn_app
+```
+
+Open the script `/wsn/wsn/settings.py` from your Django project and copy the `SECRET_KEY`. This key, uniquely defines your Django project and you don't want to lose it! Now replace your `/wsn/wsn/settings.py` with the `/wsn/wsn/settings.py` from the repository. Then paste your secret key to the respective variable within `settings.py`.
+Furthermore add the email you want to use on this application. If your email does not have an app-password related to it then go to (https://support.google.com/mail/answer/185833?hl=en&fbclid=IwAR2kghBuaYLmnfkneKjONkA4fOxg_3Zi9ae8fEc9nNxUGgIpbK3S-OPkjBw) and get one for free!
+
+Replace the `/wsn/wsn_app/models.py` of your Django project with the `/wsn/wsn_app/models.py` from the repository. Navigate to your project root directory `/wsn/` to perform the migration of models.
+
+```
+    python3 manage.py makemigrations 
+    python3 manage.py migrate
+```
+
+Replace the `/wsn/wsn/urls.py` of your Django project with the `/wsn/wsn/urls.py` from the repository.
+
+Replace the `/wsn/wsn_app/admin.py` of your Django project with the `/wsn/wsn_app/admin.py` from the repository. In the `admin.py` add your own server root directory in the `ROOT` global variable. Copy the `/pywsn/wsn_api.py` from the repository and paste it in the `/wsn/wsn_app` directory.
+
+Replace the `/wsn/wsn_app/urls.py` of your Django project with the `/wsn/wsn_app/urls.py` from the repository. 
+
+Replace the `/wsn/wsn_app/views.py` of your Django project with the `/wsn/wsn_app/views.py` from the repository. Subsequently add your server root directory in the `ROOT` global variable and your project email in the `EMAIL` global variable respectively within the `views.py`
+
+Next copy the `/wsn/wsn_app/forms.py` from the repository to your `/wsn/wsn_app/` directory and go to your root directory again in order to configure the projects' super-user 
+
+```
+    python3 manage.py createsuperuser --username Admin
+```
+
+Provide the email and set a password as requested from the manager tool.
+
+Lastly copy the `/wsn_app/media/` and `/wsn_app/static/` directories from the repository and paste them to your Django project in `/wsn/wsn_app` directory. 
+
+### Integrate the LSTM predictors
+
+Run the provided notebook `/notebooks/lstm_train.ipynb` configuring the LSTM models for 30 minutes, 1 hour and 2 hours of look-ahead prediction using 2 hours of look-back window. Export the trained models named as `lstm-30min.keras`, `lstm-1hr.keras` and `lstm-2hr.keras` respectively. Store these models in `/wsn/wsn_app/predictors` directory. If you don't want to train your own models you can use the already pre-trained ones. You can find these models in `wsn/wsn_app/predictors` directory of the repository. 
+
+For more insights on how to use and further configure the application please refer to the related document (`/docs/meteo_stations - WSN web application user manual-V2.pdf`
 
 ## Hosting the application
 
@@ -137,7 +202,7 @@ For hosting our application two different services are utilized. The commercial 
 
 ## For more information and insights on our project contact us
 
-**Aerospace S&T Remote Sensing Lab** : `remotesensinglabaerost@gmail.com` 
+**Aerospace S&T Remote Sensing Lab** : `remoteSensingLabAeroST@gmail.com` 
 
 **Ronaldo Tsela**      : `ron-tsela@di.uoa.gr` 
 

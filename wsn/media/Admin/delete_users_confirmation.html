@@ -1,0 +1,19 @@
+<!-- delete_user_confirmation.html -->
+{% extends 'Base.html' %}
+{% load static%}
+{% block title %}{% endblock %}
+
+{% block content %}
+<head>
+    <title>Delete User Confirmation</title>
+</head>
+<div style=" align-items: center; text-align: center; color:beige">
+    <h1>Delete User Confirmation</h1>
+    <p>Are you sure you want to delete User with Name {{ user.name }}?</p>
+    <form method="post" >
+        {% csrf_token %}
+        <button type="submit">Confirm Delete</button>
+        <a class="link-button " href="{% url 'admin_data_access' %}">Cancel</a>
+    </form>
+</div>
+{%endblock%}

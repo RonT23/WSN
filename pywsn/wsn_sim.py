@@ -37,11 +37,14 @@ class Weather_Station():
         #### station id
         self.station_id = station_id 
         
+        ## Replace this with your root server url
+        self.root = "your_server_root_address"
+        
         #### backend URL's #######
-        self.url_data  = f'hidden/for/security/reasons'
-        self.url_telem = f'hidden/for/security/reasons'
-        self.url_cmdRX = f'hidden/for/security/reasons'
-        self.url_cmdTX = f'hidden/for/security/reasons'
+        self.url_data  = f"http://{self.root}//station//store_data.php?"
+        self.url_telem = f"http://{self.root}//station//telemetry_files//"
+        self.url_cmdRX = f'http://{self.root}//station//command//cmd_tx.php?&st={station_id}'
+        self.url_cmdTX = f'http://{self.root}//station//command//cmd_rx.php?'
         ##########################
 
         #### initialization 

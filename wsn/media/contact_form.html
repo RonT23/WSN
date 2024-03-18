@@ -1,0 +1,18 @@
+{% extends 'Base.html' %}
+{% load static %}
+{% block title %}Contact Form{% endblock %}
+
+{% block content %}
+  <h2>Contact Us</h2>
+&nbsp
+
+  <div class="contact-form" >
+	  <form method="post" id== 'contact'>
+		  {% csrf_token %}
+		  <h2>Contact Us</h2>
+		  {{contact_form.as_table}}
+		  <p><button  type="submit" name="action" value="Contact" >Submit</button>
+	  </form>
+  </div>
+
+{% endblock %}

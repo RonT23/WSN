@@ -1,0 +1,384 @@
+{% extends 'Base.html' %}
+{% load static %}
+{% block title %}{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Folium Map</title>
+    
+	  <!-- Load plotly.js into the DOM -->
+	  <script src='https://cdn.plot.ly/plotly-2.27.0.min.js'></script>
+</head>
+
+{% if messages %}
+    <ul class="messages" id="messagesContainer">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    
+    <script>
+        // Wait for 5 seconds (5000 milliseconds) and then fade out or remove messages
+        setTimeout(function() {
+            fadeOutOrRemoveMessages();
+        }, 500);
+
+        function fadeOutOrRemoveMessages() {
+            var messagesContainer = document.getElementById('messagesContainer');
+
+            // Add a class to trigger the fade-out effect
+            messagesContainer.classList.add('fade-out');
+
+            // After the fade-out animation duration, remove the messages from the DOM
+            setTimeout(function() {
+                messagesContainer.parentNode.removeChild(messagesContainer);
+            }, 3000);
+        }
+     </script>
+     
+{% endif %}
+
+    <div id="map">{{ map_html | safe }}</div>
+      <div>
+	      <div class="navbar">
+	      
+		      <ui>
+		        <a href="" >Monitoring</a>
+		        <a href="#" id="aboutButton">About</a>
+		        <a href="#" id="contactButton">Contact Us</a>
+		        <a href="{% url 'logout' %}">Log out</a>
+		      </ui>
+		      
+	      </div>
+	      
+	      <div id="panel">
+	        &nbsp
+          <h2> Welcome {{USER}}</h2>
+		      <form class ="search-container" method="POST">
+
+				    {% csrf_token %}
+				    {{ form }}
+
+				    <button type="submit" name="action" value="select">Select</button>
+
+				    <button type="submit" name="action" value="download">Download</button>
+
+      		</form>
+		      {%if min_temp %}
+		      
+		      <div class = "container">
+		      
+		        	<table>
+		        	
+				      <tr>
+					      <th></th>
+					      <th>  Temperature (°C)  </th>
+					      <th>  Humidity     (%)  </th>
+					      <th>  Pressure   (hPa)  </th>
+					      <th>  WindSpeed  (km/hr)  </th>
+					      <th>  Rainfall   (mm) </th>
+				      </tr>
+				      
+				      <tr>
+					      <th> min				</th>
+					      <th> {{ min_temp }} 	</th>
+					      <th> {{min_hum}}		</th>
+					      <th> {{min_pr}}			</th>
+					      <th> {{min_ws}}			</th>
+					      <th> {{min_rf}}			</th>
+				      </tr>
+				      
+				      <tr>
+					      <th> max			</th>
+					      <th> {{ max_temp }} </th>
+					      <th> {{max_hum}}	</th>
+					      <th> {{max_pr}}		</th>
+					      <th> {{max_ws}}		</th>
+					      <th> {{max_rf}}		</th>
+				      </tr>
+				      
+				      <tr>
+					      <th> avg			</th>
+					      <th> {{ avg_temp }} </th>
+					      <th> {{avg_hum}}	</th>
+					      <th> {{avg_pr}}		</th>
+					      <th> {{avg_ws}}		</th>
+					      <th> {{avg_rf}}		</th>
+				      </tr>
+				      
+			      </table>
+			      
+		      </div>
+		      &nbsp;
+
+		      <div class = "container">
+			      <table>
+			      
+				      <tr>
+					      <th> Total daily accumulated Rain (mm)	</th>
+					      <th> {{trr}}			</th>
+				      </tr>
+				      
+				      <tr>
+					      <th> Average Rain Intensity (mm/hr)	</th>
+					      <th> {{ri}}			</th>
+				      </tr>
+				      
+			      </table>
+			      
+		      </div>
+
+		      &nbsp;
+
+		      <hr>
+
+		      &nbsp;
+		
+		      <div id='myDiv'></div>
+
+		      <div class="container">
+		        <div class="plot-container" id="plot1"></div>
+		      </div>
+
+		      <div class="container">
+		        <div class="plot-container" id="plot2"></div>
+		      </div>
+
+		      <div class="container">
+		        <div class="plot-container" id="plot3"></div>
+		       </div>
+
+		      <div class="container">
+		        <div class="plot-container" id="plot4"></div>
+		      </div>
+
+		      <div class="container">
+		        <div class="plot-container" id="plot5"></div>
+		      </div>
+
+		      <div class="container">
+		        <div class="plot-container" id="plot6"></div>
+		      </div>
+
+		      <script>
+			      ///////////////////// Plot 1  //////////////////////
+				    var trace1 = {
+					    x: {{time|safe}},
+					    y: {{temp}},
+					    type: 'scatter',
+				        mode: 'lines' ,
+				        name: 'Measured Temperature'  // Label for the first trace
+
+				    };
+				    
+				    {% if time_pre %}
+				    
+					    var trace_pre1 = {
+						    x: {{time_pre|safe}},
+						    y: {{temp_pre}},
+						    type: 'scatter',
+						    mode: 'lines' ,
+						    name: 'Predicted Temperature'  // Label for the first trace
+
+					    };
+
+					    var data1 = [trace1,trace_pre1];
+					    var layout1 = {
+						    title: 'Air Temperature',
+						    paper_bgcolor: 'rgba(0,0,0,0)',
+						    plot_bgcolor: 'rgba(0,0,0,0)',
+						    font: { color: '#ffffff', },
+						    xaxis: {
+							    title: 'Time',
+							    showgrid: false,
+						    },
+						    yaxis: { title: '°C', showgrid: false, },
+					    };
+					    
+				    {% else %}
+				    
+					  var data1 = [trace1];
+					  var layout1 = {
+						  title: 'Air Temperature',
+						  paper_bgcolor: 'rgba(0,0,0,0)',
+						  plot_bgcolor: 'rgba(0,0,0,0)',
+						  font: { color: '#ffffff', },
+						  xaxis: {
+							  title: 'Time',
+							  showgrid: false,
+						  },
+						  yaxis: { title: '°C', showgrid: false, },
+					  };
+					  
+				    {% endif %}
+				    
+				    Plotly.newPlot('plot1', data1, layout1);
+
+				    //////////////////////////////////////////////////
+
+			      ///////////////////// Plot 2  ///////////////////
+			      var trace2 = {
+				      y	: {{hum}},
+				      x	: {{time|safe}},
+				      type: 'scatter',
+				      mode: 'lines' ,
+				      name: 'Measured Humidity'  // Label for the first trace
+			      };
+			      {% if  hum_pre %}
+				      var trace_pre2 = {
+					      x: {{time_pre|safe}},
+					      y: {{hum_pre}},
+					      type: 'scatter',
+					      mode: 'lines' ,
+					      name: 'Predicted Humidity'  // Label for the first trace
+
+				      };
+
+				      var data2 = [trace2,trace_pre2];
+				      var layout2 = {
+					      title		  : 'Air Humidity',
+					      paper_bgcolor : 'rgba(0,0,0,0)',
+					      plot_bgcolor  : 'rgba(0,0,0,0)',
+					      font		  : { color: '#ffffff',},
+					      xaxis		  : { title: 'Time', showgrid: false,},
+					      yaxis		  : { title: '%',    showgrid: false, },
+				      };
+
+				      {% else %}
+					      var data2   = [trace2];
+					      var layout2 = {
+						      title		  : 'Air Humidity',
+						      paper_bgcolor : 'rgba(0,0,0,0)',
+						      plot_bgcolor  : 'rgba(0,0,0,0)',
+						      font		  : { color: '#ffffff',},
+						      xaxis		  : { title: 'Time', showgrid: false,},
+						      yaxis		  : { title: '%',    showgrid: false, },
+					      };
+				      {%endif%}
+			      Plotly.newPlot('plot2', data2, layout2);
+			      ////////////////////////////////////////////////
+
+			      ////////////////////// Plot 3  ////////////////
+			      var trace3 = {
+				      y    : {{pres}},
+				      x    : {{time|safe}},
+				      type : 'scatter',
+				      mode: 'lines' ,
+				      name: 'Measured Pressure'  // Label for the first trace
+			      };
+			      {% if  press_pre %}
+				      var trace_pre3 = {
+					      x: {{time_pre|safe}},
+					      y: {{press_pre}},
+					      type: 'scatter',
+					      mode: 'lines' ,
+					      name: 'Predicted Pressure'  // Label for the first trace
+
+				      };
+
+				      var data3 = [trace3,trace_pre3];
+
+			      {% else %}
+			      var data3   = [trace3];
+			      {%endif%}
+			      var layout3 = {
+				      title         : 'Barometric Pressure',
+				      paper_bgcolor : 'rgba(0,0,0,0)',
+				      plot_bgcolor  : 'rgba(0,0,0,0)',
+				      font		  : { color: '#ffffff',},
+				      xaxis		  : { title: 'Time',  showgrid: false, },
+				      yaxis		  : { title: 'hPa',   showgrid: false, },
+			      };
+
+
+			      Plotly.newPlot('plot3', data3, layout3);
+			      //////////////////////////////////////////////
+
+			      ///////////////////// Plot 4   //////////////
+			      var trace4 = {
+			        	y   : {{windSpeed}},
+				      x   : {{time|safe}},
+				      type: 'scatter',
+				      mode: 'lines' ,
+				      name: 'Measured Wind Speed'  // Label for the first trace
+			      };
+			      {% if  speed_pre %}
+				      var trace_pre4 = {
+					      x: {{time_pre|safe}},
+					      y: {{speed_pre}},
+					      type: 'scatter',
+					      mode: 'lines' ,
+					      name: 'Predicted Wind Speed'  // Label for the first trace
+				      };
+
+				      var data4 = [trace4,trace_pre4];
+
+			      {% else %}
+			      var data4   = [trace4];
+			      {%endif%}
+			      var layout4 = {
+				      title         : 'Wind Speed',
+				      paper_bgcolor : 'rgba(0,0,0,0)',
+				      plot_bgcolor  : 'rgba(0,0,0,0)',
+				      font          : { color: '#ffffff', },
+				      xaxis		  : { title: 'Time',  showgrid: false, },
+				      yaxis		  : { title: 'km/hr',   showgrid: false, },
+			      };
+			      Plotly.newPlot('plot4', data4, layout4);
+			      //////////////////////////////////////////////
+
+			      ///////////////////// Plot 5  ///////////////
+			      var trace5 = {
+			        	y    : {{windDir}},
+				      x    : {{time|safe}},
+				      type : 'scatter',
+				      mode: 'lines'
+			      };
+			      var data5   = [trace5];
+			      var layout5 = {
+				      title         : 'Wind Direction',
+				      paper_bgcolor : 'rgba(0,0,0,0)',
+				      plot_bgcolor  : 'rgba(0,0,0,0)',
+				      font          : { color: '#ffffff', },
+				      xaxis		  : { title: 'Time',  showgrid: false, },
+				      yaxis		  : { title: 'deg',   showgrid: false, },
+			      };
+			      Plotly.newPlot('plot5', data5, layout5);
+			      //////////////////////////////////////////////
+
+			      ////////////////////// Plot 6  //////////////
+			      var trace6 = {
+			        	y    : {{rain}},
+				      x    : {{time|safe}},
+				      type : 'scatter',
+				      mode: 'lines'
+			      };
+			      var data6   = [trace6];
+			      var layout6 = {
+				      title         : 'Rainfall',
+				      paper_bgcolor : 'rgba(0,0,0,0)',
+				      plot_bgcolor  : 'rgba(0,0,0,0)',
+				      font		  : { color: '#ffffff', },
+				      xaxis		  : { title: 'Time',  showgrid: false, },
+				      yaxis		  : { title: 'mm',  showgrid: false, },
+			      };
+			      Plotly.newPlot('plot6', data6, layout6);
+			      /////////////////////////////////////////////
+
+		      </script>
+		  
+		  {% endif %}
+	    </div>
+		  
+		  <!-- Update fuction -->
+	    <script>
+	        updateFormChoices();
+	        setTimeout(function() {location.reload();}, 5*60*1000);
+	    </script>	   
+	    
+  </div>
+{% endblock %}
+

@@ -1,0 +1,66 @@
+{% extends 'Base.html' %}
+{% load static%}
+{% block title %}{% endblock %}
+
+{% block content %}
+<style>
+  .station {
+      border: 1px solid #333;
+      padding: 10px;
+      margin: 10px;
+      width: 100%;
+      margin-top: 20px;
+      background-color: #333;
+      max-width: 80%;
+      display: flex; /* Use flexbox layout */
+      justify-content: space-between; /* Space between items, pushing them to the left and right */
+      align-items: center; /* Align items vertically in the center */
+      box-sizing: border-box;
+  }
+
+  /* Style the button container */
+  .station div {
+      display: flex; /* Use flexbox layout for the button container */
+      align-items: center; /* Align items vertically in the center */
+  }
+
+  /* Style the buttons */
+  .station button {
+      background-color: #007BFF;
+      color: #fff;
+      padding: 10px 10px;
+      cursor: pointer;
+      width:80px;
+      margin-right: 20px; /* Add some space between buttons */
+  }
+  
+  .station button:hover {
+      background-color: #0056b3;
+  }
+
+  /* Remove margin from the Delete link */
+  .link-button {
+      margin-left: 20px;
+      text-decoration: none; /* Remove underline from the link */
+  }
+  
+</style>
+
+<div style="margin-top: 100px;"></div>
+{% for user in users %}
+
+<div class="station"> 
+  <h4> {{ user.username   }} :  {{   user.email }}</h4>
+  
+  <div>
+    <a class="link-button" href="{% url 'edit_user' user.id %}"> Edit </a>
+    <a class="link-button" href="{% url 'delete_user_confirmation' user.id %}">Delete</a> 
+  </div>
+  
+</div>
+
+{% endfor %}
+
+<a class="link-button" href="{% url 'add_user'%}"> Add User</a> 
+
+{% endblock %}

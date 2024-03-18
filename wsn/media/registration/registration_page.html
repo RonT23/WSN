@@ -1,0 +1,26 @@
+{% extends 'Base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<body class='body-reg'>
+  <div class="reg-container">
+      <form method="post" class="reg-form">
+      
+          {% csrf_token %}
+          <h2 class='reg_title'> Registration Form </h2>
+	        <h4 class="text_class">Fields with * are mandatory</h4>
+          {{reg_form.as_table}}
+          
+          &nbsp;
+          <div class="reg-buton-div">
+              <button  type="submit">Submit</button>
+              <a  href="{% url 'login' %}"class='link-button'  >Back</a>
+          </div>
+          
+      </form>
+  </div>
+</body>
+
+{% endblock %}
