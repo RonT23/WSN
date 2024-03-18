@@ -117,6 +117,12 @@ You can contact us for a complete meteorological dataset, or you can properly mo
 
 ## Creating a Django application
 
+Here we present the steps required to create a web-based user interface application using the Django Python framework (https://www.djangoproject.com/). Once you complete these steps the result will be an interactive web-based graphical user interface for visualizing real-time meteorological data and short-range weather forecasts as depicted in Figure 5. 
+
+![Alt text](./img/figure_5.png)
+
+**Figure 5** - The UOA WSN real-time monitoring and short-range forecasting web-gui
+
 ### Integrating the pyWSN package
 
 ### Integrating the LSTM model 
@@ -127,7 +133,7 @@ For hosting our application two different services are utilized. The commercial 
 
 ## Visit our web application portal 
 
-**URL** : `https://uoawsn.pythonanywhere.com`
+**URL** : `https://uoawsn.pythonanywhere.com/`
 
 ## For more information and insights on our project contact us
 
