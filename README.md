@@ -16,7 +16,7 @@ Power generation is based on solar radiation where the abundant solar energy is 
 
 ![Alt text](./img/figure_1.jpg)
 
-**Figure 1** - The monitoring system architecture
+**Figure 1** - The monitoring twin units
 
 All actions of the station are coordinated and controlled by an Arduino Mega micro-controller board. Every unit operates on its own without external intervention controlling and monitoring its own state and adjusting the operation accordingly. 
 
@@ -117,23 +117,21 @@ You can contact us for a complete meteorological dataset, or you can properly mo
 
 ## Creating a Django application
 
-## Integrating the pyWSN package
+### Integrating the pyWSN package
 
-## Integrating the LSTM model 
+### Integrating the LSTM model 
 
 ## Hosting the application
 
 For hosting our application two different services are utilized. The commercial TopHost service (https://top.host) hosts our backend data handling and control system while the PythonAnywhere is utilized for deploying the web user interface application (https://www.pythonanywhere.com/). 
 
-### Visit our web application 
+## Visit our web application portal 
 
-**URL** : `uoawsn.pythonanywhere.com`
+**URL** : `https://uoawsn.pythonanywhere.com`
 
 ## For more information and insights on our project contact us
 
-Aerospace S&T Remote Sensing Lab email : `remotesensinglabaerost@gmail.com` 
-
-### Members
+**Aerospace S&T Remote Sensing Lab** : `remotesensinglabaerost@gmail.com` 
 
 **Ronaldo Tsela**      : `ron-tsela@di.uoa.gr` 
 
@@ -141,6 +139,6 @@ Aerospace S&T Remote Sensing Lab email : `remotesensinglabaerost@gmail.com`
 
 **Stavros Kolios**     : `skolios@aerospace.uoa.gr`
 
-### Documentation
+## Documentation
 
-You can read our detailed documentation in `/docs`, where we describe the development and implementation steps.
+You can read our detailed documentation in `/docs`, where we describe the development and implementation steps, we provide user-manuals and explain design choices and considerations.
