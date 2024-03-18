@@ -10,15 +10,16 @@ import pandas as pd
 import numpy as np
 
 class Weather_Station_Backend_Controller:
-    def __init__(self):
+    def __init__(self, server_root):
         '''
             set the route URLs used to access the different backend handlers
         '''
-        self.url_telemFile= f"http://uoa-wsn.i-met.gr//station//telemetry_files//"                  # route URL for the telemetry files
-        self.url_stats    = f"http://uoa-wsn.i-met.gr//api//data//stats.php?"                       # route URL for the statistics generator handler
-        self.url_daily    = f"http://uoa-wsn.i-met.gr//api//data//daily.php?"                       # route URL for the daily data generator handler
-        self.url_dataset  = f"http://uoa-wsn.i-met.gr//api//data//dataset.php?"                     # route URL for the dataset generator handler
-        self.url_cmdTX    = f"http://hidden//for//security//reasons"                                # route URL for the command transmiter handler
+        self.root = server_root
+        self.url_telemFile= f"http://{self.root}//station//telemetry_files//" # route URL for the telemetry files
+        self.url_stats    = f"http://{self.root}//api//data//stats.php?" # route URL for the statistics generator handler
+        self.url_daily    = f"http://{self.root}//api//data//daily.php?" # route URL for the daily data generator handler
+        self.url_dataset  = f"http://{self.root}//api//data//dataset.php?" # route URL for the dataset generator handler
+        self.url_cmdTX    = f"http://{self.root}//station//command/cmd_rx.php?" # route URL for the command transmiter handler
 
     def get_data(self, station_id):
         '''
