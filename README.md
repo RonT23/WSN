@@ -22,7 +22,7 @@ TM/ TC and data transmission utilize three virtual TCP/IP over HTTP links for TM
 
 Figure 1 depicts the architecture of the monitoring units and Table 1 contains the sensors employed and their basic characteristics. The code for the controller can be found in `station/wsn_main.ino`. In `station/hardware_kicad.` you can find the design of the custom adapter board implemented to interface the Arduino Mega board, with the GSM/GPRS SIM900 shield, the sensors and the power lines respectively in a structured and well-organized manner. 
 
-Table 1 - The COTS sensors
+**Table 1** - The COTS sensors
 | Parameter     | Range           | Accuracy/ Resolution | Device/ Component |
 |---------------|-----------------|----------------------|-------------------|
 | Humidity      |   0-100 [%]     |      +- 2  [%]       |     AM2315        |
@@ -31,15 +31,15 @@ Table 1 - The COTS sensors
 | Rainfall      |      -          |      0.29 [mm]       |   Tipping bucket  |
 | Wind Speed    |      -          |      2.4  [km/h]     |   Cup Anemometer  |
 | Wind Direction|      -          |      22.5 [deg]      |    Wind Vane      |
-|---------------|-----------------|----------------------|-------------------|
 
-![Alt Figure 1 - The monitoring system architecture](./img/figure_1.png)
+![Alt text](./img/figure_1.png)
+**Figure 1** - The monitoring system architecture
 
 ## The proposed server structure
 
 Each weather station is a self-contained unit which communicates remotely with a backend data management and control system (server). The structure for the proposed backend system is depicted on Figure 2. The backend system comprises a database and a set of internet routines (we call them "handlers") that manage requests. You can find these routines in `/handlers`. All handlers are implemented in PHP. Table 2 contains the list of handlers and their functionality. 
 
-Table 2 - The WSN backend handlers 
+**Table 2** - The WSN backend handlers 
 | Handler Name |        Description                                     |
 |--------------|--------------------------------------------------------|
 | daily_data   |  provides measurements collected for the current day   |
@@ -49,9 +49,9 @@ Table 2 - The WSN backend handlers
 |  cmd_tx      |  interfaces the station controller with the stations   |
 | store_data   |  handles the incoming measurements from stations. Stores data both in the database and in a backup file       |
 | telemetry    |  handles TM packets coming from stations               |
-|--------------|--------------------------------------------------------|
 
-![Alt Figure 2 - The backend system architecture](./img/figure_2.png)
+![Alt text](./img/figure_2.png)
+**Figure 2** - The backend system architectrue
 
 ## The proposed server organization
 ``` 
@@ -102,7 +102,7 @@ Table 2 - The WSN backend handlers
 
 ## Hosting the application
 
-## Visit our site
+## Visit our web-site
 
 **URL** : `uoawsn.pythonanywhere.com`
 
@@ -113,7 +113,11 @@ Aerospace S&T Remote Sensing Lab email : `remotesensinglabaerost@gmail.com`
 ### Members
 
 **Ronaldo Tsela**      : `ron-tsela@di.uoa.gr` 
+
 **Stella R. Maladaki** : `maladakistella@gmail.com` 
+
 **Stavros Kolios**     : `skolios@aerospace.uoa.gr`
+
+### Documentation
 
 Also you can read our detailed documentation in `/docs`, where we describe the development and implementation steps.
