@@ -12,7 +12,11 @@ The system is divided into five core components:
 ## Monitoring system
 
 The monitoring system is based on COTS and open-source components. Each monitoring system comprises a power generation module, a set of sensors and a network adapter.
-Power generation is based on solar radiation where the abundant solar energy is transformed into valuable electric energy via solar panels and stored/ distributed to the systems electronics. Also each unit is equipped with a rechargeable battery providing contiguous operation for at least 2 days per full charge at constant 12 VDC in case of cloudy days and nighttime.
+Power generation is based on solar radiation where the abundant solar energy is transformed into valuable electric energy via solar panels and stored/ distributed to the systems electronics. Also each unit is equipped with a rechargeable battery providing contiguous operation for at least 2 days per full charge at constant 12 VDC in case of cloudy days and nighttime. In Figure 1 two of our stations are depicted. 
+
+![Alt text](./img/figure_1.png)
+
+**Figure 1** - The monitoring system architecture
 
 All actions of the station are coordinated and controlled by an Arduino Mega micro-controller board. Every unit operates on its own without external intervention controlling and monitoring its own state and adjusting the operation accordingly. 
 
@@ -20,7 +24,7 @@ TM/ TC and data transmission is based on the GPRS through a GSM adapter module. 
 
 TM/ TC and data transmission utilize three virtual TCP/IP over HTTP links, following a server-client approach keeping the design as simple and efficient as possible. 
 
-Figure 1 depicts the architecture of the monitoring units and Table 1 contains the sensors employed and their basic characteristics. The code for the controller can be found in `station/wsn_main.ino`. In `station/hardware_kicad.rar` you can find the design of the custom adapter board implemented to interface the Arduino Mega board, with the GSM/GPRS SIM900 shield, the sensors and the power lines respectively in a structured and well-organized manner. 
+Figure 2 depicts the architecture of the monitoring units and Table 1 contains the sensors employed and their basic characteristics. The code for the controller can be found in `/station/wsn_main.ino`. In `/station/hardware_kicad.rar` you can find the design of the custom adapter board implemented to interface the Arduino Mega board, with the GSM/GPRS SIM900 shield, the sensors and the power lines respectively in a structured and well-organized manner. 
 
 **Table 1** - The COTS sensors
 | Parameter     | Range           | Accuracy/ Resolution | Device/ Component |
@@ -32,13 +36,13 @@ Figure 1 depicts the architecture of the monitoring units and Table 1 contains t
 | Wind Speed    |      -          |      2.4  [km/h]     |   Cup Anemometer  |
 | Wind Direction|      -          |      22.5 [deg]      |    Wind Vane      |
 
-![Alt text](./img/figure_1.png)
+![Alt text](./img/figure_2.png)
 
-**Figure 1** - The monitoring system architecture
+**Figure 2** - The monitoring system architecture
 
 ## Data storage and management system 
 
-Each weather station is a self-contained unit which communicates remotely with a backend data management and control system (server). The structure for the proposed backend system is depicted on Figure 2. The backend system comprises a database and a set of internet routines (we call them "handlers") that manage incoming requests from both station(s) and users. All handlers are implemented in PHP. You can find these handler routines in `/handlers` and use them to create the backend control and data management system. Table 2 contains the list of handlers and their functionality. The proposed server structure is provided in Tree 1. 
+Each weather station is a self-contained unit which communicates remotely with a backend data management and control system (server). The structure for the proposed backend system is depicted on Figure 3. The backend system comprises a database and a set of internet routines (we call them "handlers") that manage incoming requests from both station(s) and users. All handlers are implemented in PHP. You can find these handler routines in `/handlers` and use them to create the backend control and data management system. Table 2 contains the list of handlers and their functionality. The proposed server structure is provided in Tree 1. 
 
 **Table 2** - The WSN backend handlers 
 | Handler Name |        Description                                     |
@@ -51,9 +55,9 @@ Each weather station is a self-contained unit which communicates remotely with a
 | store_data   |  handles the incoming measurements from stations. Stores data both in the database and in a backup file       |
 | telemetry    |  handles TM packets coming from stations               |
 
-![Alt text](./img/figure_2.png)
+![Alt text](./img/figure_3.png)
 
-**Figure 2** - The backend system architectrue
+**Figure 3** - The backend system architectrue
 
 ``` 
 \__ root
@@ -95,19 +99,19 @@ Each weather station is a self-contained unit which communicates remotely with a
 
 In order to support application development and easy access to data and control we developed a high level package in Python that encapsulates the complexity of the aforementioned handlers. The package contains the `Weather_Station_Backend_Controller` class which provides a set of member functions used for requesting data from the database and sending commands to monitoring units in the network. 
 
-To utilize the package you need to instantiate a `Weather_Station_Backend_Controller` object passing it the root directory of your server (structured as shown in Tree 1). For insights on how to use the packages' member functions please refer to `notebooks/wsn_api.ipynb`. 
+To utilize the package you need to instantiate a `Weather_Station_Backend_Controller` object passing it the root directory of your server (structured as shown in Tree 1). For insights on how to use the packages' member functions please refer to `/notebooks/wsn_api.ipynb`. 
 
 ## LSTM for short-range weather forecasting 
 
-LSTM networks are specialized variant of RNN known for their distinctive ability to capture long term dependencies and expose intricate patterns within sequential data efficiently making them appropriate for modeling the meteorological variables. An LSTM cell as depicted in Figure 3 is a more complex network than the simple Vanilla RNN. Its unique features however make it capable of resolving many of the problems present in classic RNN variations such as the vanishing and exploding gradients situations. Fiugre 3 depicts the architecture of the LSTM cell.
+LSTM networks are specialized variant of RNN known for their distinctive ability to capture long term dependencies and expose intricate patterns within sequential data efficiently making them appropriate for modeling the meteorological variables. An LSTM cell as depicted in Figure 4 is a more complex network than the simple Vanilla RNN. Its unique features however make it capable of resolving many of the problems present in classic RNN variations such as the vanishing and exploding gradients situations. Fiugre 3 depicts the architecture of the LSTM cell.
 
-![Alt text](./img/figure_3.png)
+![Alt text](./img/figure_4.png)
 
-**Figure 3** - The LSTM cell architecture
+**Figure 4** - The LSTM cell architecture
 
 In this project we structured a simple but robust LSTM-based network for the task of predicting the air temperature, the relative air humidity, the barometric pressure and the wind speed respectively for a time-span of up to 2 hours in advance. We trained the model on data collected by our monitoring unit established in Psachna/ Euboia in the Department of Aerospace Science and Technology.
 
-In `notebook/lstm_training.ipynb` you can find a detailed notebook used to train the LSTM-based short range predictors. The LSTM algorithms are implemented, trained and integrated in our applications through the Keras machine learning framework (https://keras.io/api/). The Keras API is very simple to understand and cope with, so anyone can learn how to use the training routines implemented to generate our predictors. By changing the parameter `timesteps` you can alter the look-back window (number of historical data samples to use) and by changing the parameter `window` you can alter the look-ahead window (number of time-steps to predict in future). 
+In `/notebooks/lstm_training.ipynb` you can find a detailed notebook used to train the LSTM-based short range predictors. The LSTM algorithms are implemented, trained and integrated in our applications through the Keras machine learning framework (https://keras.io/api/). The Keras API is very simple to understand and cope with, so anyone can learn how to use the training routines implemented to generate our predictors. By changing the parameter `timesteps` you can alter the look-back window (number of historical data samples to use) and by changing the parameter `window` you can alter the look-ahead window (number of time-steps to predict in future). 
 
 You can contact us for a complete meteorological dataset, or you can properly modify the provided notebook to support your own dataset. 
 
@@ -117,11 +121,11 @@ You can contact us for a complete meteorological dataset, or you can properly mo
 
 ## Integrating the LSTM model 
 
-The training of the LSTM neural network model for the task of predicting the air temperature, the relative air humidity, the barometric pressure and the wind speed is ported in Python using the Keras machine learning framework.
-
 ## Hosting the application
 
-## Visit our web-site
+For hosting our application two different services are utilized. The commercial TopHost service (https://top.host) hosts our backend data handling and control system while the PythonAnywhere is utilized for deploying the web user interface application (https://www.pythonanywhere.com/). 
+
+### Visit our web application 
 
 **URL** : `uoawsn.pythonanywhere.com`
 
