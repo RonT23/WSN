@@ -1,4 +1,5 @@
-# UOA WSN Project <add the title of the paper here>
+# WSN Project : 
+## An integrated, automated and modular approach for real-time weather monitoring of surface meteorological variables and short-range forecasting using machine learning
 
 Weather monitoring and forecasting plays a crucial role in multiple aspects of our everyday lives. This project sets the initiatives for the implementation of a fully automated system for real-time weather monitoring of the fundamental meteorological parameters and their short-range forecasting. 
 
@@ -121,7 +122,7 @@ Visualizing data is also a very important task. In out project we developed a we
 
 ![Alt text](./img/figure_5.png)
 
-**Figure 5** - The UOA WSN real-time monitoring and short-range forecasting web-gui
+**Figure 5** - The real-time monitoring and short-range forecasting web-gui
 
 Since the scope of this project is to propose a methodology for creating a complete application, here we provide the steps required to re-create our web-based user interface application. Once you complete these steps the result will be an interactive web-based graphical user interface for visualizing real-time meteorological data and short-range weather forecasts as depicted in Figure 5. However it should be noted that you must create a backend and monitoring system as predefined in order to see actual data in your application!
 
