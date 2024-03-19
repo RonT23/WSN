@@ -101,6 +101,8 @@ class Weather_Station_Backend_Controller:
             Solar_Voltage (float64),
             Heartbeat (unsigned int),
             Mode (unsigned int)
+
+            @station_id : the unique station identifier of the form stxx
         '''
         response = requests.post(self.url_telemFile+f'telemetry_{station_id}')
 
