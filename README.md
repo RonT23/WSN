@@ -24,7 +24,7 @@ TM/ TC and data transmission is based on the GPRS through a GSM adapter module. 
 
 TM/ TC and data transmission utilize three virtual TCP/IP over HTTP links, following a server-client approach keeping the design as simple and efficient as possible. 
 
-Figure 2 depicts the architecture of the monitoring units and Table 1 contains the sensors employed and their basic characteristics. The code for the controller can be found in `/station/wsn_main.ino`. In `/station/hardware_kicad.rar` you can find the design of the custom adapter board implemented to interface the Arduino Mega board, with the GSM/GPRS SIM900 shield, the sensors and the power lines respectively in a structured and well-organized manner. 
+Figure 2 depicts the architecture of the monitoring units and Table 1 contains the sensors employed and their basic characteristics. The code for the controller can be found at `/station/wsn_main.ino`. In `/station/hardware_kicad.rar` you can find the design of the custom adapter board implemented to interface the Arduino Mega board, with the GSM/GPRS SIM900 shield, the sensors and the power lines respectively in a structured and well-organized manner. 
 
 **Table 1** - The COTS sensors
 | Parameter     | Range           | Accuracy/ Resolution | Device/ Component |
@@ -42,7 +42,7 @@ Figure 2 depicts the architecture of the monitoring units and Table 1 contains t
 
 ## Data storage and management system 
 
-Each weather station is a self-contained unit which communicates remotely with a backend data management and control system (server). The structure for the proposed backend system is depicted on Figure 3. The backend system comprises a database and a set of internet routines (we call them "handlers") that manage incoming requests from both station(s) and users. All handlers are implemented in PHP. You can find these handler routines in `/handlers` and use them to create the backend control and data management system. Table 2 contains the list of handlers and their functionality. The proposed server structure is provided in Tree 1. 
+Each weather station is a self-contained unit which communicates remotely with a backend data management and control system (server). The structure for the proposed backend system is depicted on Figure 3. The backend system comprises a database and a set of internet routines (we call them "handlers") that manage incoming requests from both station(s) and users. All handlers are implemented in PHP. You can find these handler routines at `/handlers` and use them to create the backend control and data management system. Table 2 contains the list of handlers and their functionality. The proposed server structure is provided in Tree 1. 
 
 **Table 2** - The WSN backend handlers 
 | Handler Name |        Description                                     |
@@ -103,7 +103,7 @@ To utilize the package you need to instantiate a `Weather_Station_Backend_Contro
 
 ## LSTM for short-range weather forecasting 
 
-LSTM networks are specialized variant of RNN known for their distinctive ability to capture long term dependencies and expose intricate patterns within sequential data efficiently making them appropriate for modeling the meteorological variables. An LSTM cell as depicted in Figure 4 is a more complex network than the simple Vanilla RNN. Its unique features however make it capable of resolving many of the problems present in classic RNN variations such as the vanishing and exploding gradients situations. Fiugre 3 depicts the architecture of the LSTM cell.
+LSTM networks are specialized variant of RNN known for their distinctive ability to capture long term dependencies and expose intricate patterns within sequential data efficiently making them appropriate for modeling the meteorological variables. An LSTM cell as depicted in Figure 4 is a more complex network than the simple Vanilla RNN. Its unique features however make it capable of resolving many of the problems present in classic RNN variations such as the vanishing and exploding gradients situations.
 
 ![Alt text](./img/figure_4.png)
 
@@ -111,21 +111,23 @@ LSTM networks are specialized variant of RNN known for their distinctive ability
 
 In this project we structured a simple but robust LSTM-based network for the task of predicting the air temperature, the relative air humidity, the barometric pressure and the wind speed respectively for a time-span of up to 2 hours in advance. We trained the model on data collected by our monitoring unit established in Psachna/ Euboia in the Department of Aerospace Science and Technology.
 
-In `/notebooks/lstm_training.ipynb` you can find a detailed notebook used to train the LSTM-based short range predictors. The LSTM algorithms are implemented, trained and integrated in our applications through the Keras machine learning framework (https://keras.io/api/). The Keras API is very simple to understand and cope with, so anyone can learn how to use the training routines implemented to generate our predictors. By changing the parameter `timesteps` you can alter the look-back window (number of historical data samples to use) and by changing the parameter `window` you can alter the look-ahead window (number of time-steps to predict in future). 
+`/notebooks/lstm_training.ipynb` is a detailed Python notebook used to train the LSTM-based short range predictors. The LSTM algorithms are implemented, trained and integrated in our applications through the Keras/Tensorflow machine learning framework (https://keras.io/api/). The Keras API is very simple to understand and to cope with, so anyone can learn how to use the training routines implemented to generate our predictors. By changing the parameter `timesteps` you can alter the look-back window (number of historical data samples to use) and by changing the parameter `window` you can alter the look-ahead window (number of time-steps to predict in future) respectively. 
 
 You can contact us for a complete meteorological dataset, or you can properly modify the provided notebook to support your own dataset. 
 
 ## Creating a Django application
 
-Here we present the steps required to re-create our web-based user interface application using the Django Python framework (https://www.djangoproject.com/). Once you complete these steps the result will be an interactive web-based graphical user interface for visualizing real-time meteorological data and short-range weather forecasts as depicted in Figure 5. However it should be noted that you must create a backend and monitoring system as predefined in order to see actual data in your application!
+Visualizing data is also a very important task. In out project we developed a web-based graphical application for accessing and visualizing the real-time measurements and predictions using the Django Python framework (https://www.djangoproject.com/). Figure 5 depicts the main page of our application. Visit our web-site in https://uoawsn.pythonanywhere.com/ .
 
 ![Alt text](./img/figure_5.png)
 
 **Figure 5** - The UOA WSN real-time monitoring and short-range forecasting web-gui
 
-### Create a Python virtual environment for the project and install the required python packages
+Since the scope of this project is to propose a methodology for creating a complete application, here we provide the steps required to re-create our web-based user interface application. Once you complete these steps the result will be an interactive web-based graphical user interface for visualizing real-time meteorological data and short-range weather forecasts as depicted in Figure 5. However it should be noted that you must create a backend and monitoring system as predefined in order to see actual data in your application!
 
-A basic requirement is that you have locally installed python3. It is recommended to use python environments however you can execute all of the following steps outside it as well.
+### Create a Python virtual environment 
+
+A basic requirement is that you have locally installed python3. Also it is recommended to use python environments, however you can execute all of the following steps directly as well.
 
 ```
     sudo apt-get install python3-pip
@@ -136,7 +138,11 @@ A basic requirement is that you have locally installed python3. It is recommende
 
     # activate the environment
     source ./django-vevn/bin/activate
+```
 
+### Install the required python packages
+
+```
     pip3 install folium 
     pip3 install pandas
     pip3 install django
@@ -147,7 +153,7 @@ A basic requirement is that you have locally installed python3. It is recommende
     pip3 install tensorflow
 ```
 
-### Create a Django project and configure the application
+### Start a Django project and create an application
 
 ```
     # start a new Django project and name it 'wsn'
@@ -158,17 +164,19 @@ A basic requirement is that you have locally installed python3. It is recommende
     python3 manage.py startapp wsn_app
 ```
 
-Open the script `/wsn/wsn/settings.py` from your Django project and copy the `SECRET_KEY`. This key, uniquely defines your Django project and you don't want to lose it! Now replace your `/wsn/wsn/settings.py` with the `/wsn/wsn/settings.py` from the repository. Then paste your secret key to the respective variable within `settings.py`.
-Furthermore add the email you want to use on this application. If your email does not have an app-password related to it then go to (https://support.google.com/mail/answer/185833?hl=en&fbclid=IwAR2kghBuaYLmnfkneKjONkA4fOxg_3Zi9ae8fEc9nNxUGgIpbK3S-OPkjBw) and get one for free!
 
-Replace the `/wsn/wsn_app/models.py` of your Django project with the `/wsn/wsn_app/models.py` from the repository. Navigate to your project root directory `/wsn/` to perform the migration of models.
+### Configure the Django application 
+
+Open the script `/wsn/wsn/settings.py` from your Django project and copy the `SECRET_KEY`. This key, uniquely defines your Django project and you don't want to lose it! Now replace your `/wsn/wsn/settings.py` with the `/wsn/wsn/settings.py` from the repository. Then paste your secret key to the respective variable within `settings.py`. Next add the email you want to use on this application. If your email does not have an app-password related to it then go to (https://support.google.com/mail/answer/185833?hl=en&fbclid=IwAR2kghBuaYLmnfkneKjONkA4fOxg_3Zi9ae8fEc9nNxUGgIpbK3S-OPkjBw) and get one for free! You can find the variable associated with the email and password by looking the related comments we provide. 
+
+Replace the `/wsn/wsn_app/models.py` of your Django project with the `/wsn/wsn_app/models.py` from the repository. Next navigate to your project root directory `/wsn/` to perform the migration of these models in order to configure them.
 
 ```
     python3 manage.py makemigrations 
     python3 manage.py migrate
 ```
 
-Replace the `/wsn/wsn/urls.py` of your Django project with the `/wsn/wsn/urls.py` from the repository.
+Replace the `/wsn/wsn/urls.py` of your Django project with the `/wsn/wsn/urls.py` from the repository. 
 
 Replace the `/wsn/wsn_app/admin.py` of your Django project with the `/wsn/wsn_app/admin.py` from the repository. In the `admin.py` add your own server root directory in the `ROOT` global variable. Copy the `/pywsn/wsn_api.py` from the repository and paste it in the `/wsn/wsn_app` directory.
 
@@ -176,29 +184,35 @@ Replace the `/wsn/wsn_app/urls.py` of your Django project with the `/wsn/wsn_app
 
 Replace the `/wsn/wsn_app/views.py` of your Django project with the `/wsn/wsn_app/views.py` from the repository. Subsequently add your server root directory in the `ROOT` global variable and your project email in the `EMAIL` global variable respectively within the `views.py`
 
-Next copy the `/wsn/wsn_app/forms.py` from the repository to your `/wsn/wsn_app/` directory and go to your root directory again in order to configure the projects' super-user 
+Copy the `/wsn/wsn_app/forms.py` from the repository to your `/wsn/wsn_app/` directory and go to your root directory again in order to configure the projects' super-user by running the following command.
 
 ```
     python3 manage.py createsuperuser --username Admin
 ```
 
-Provide the email and set a password as requested from the manager tool.
+Provide the super-users' email and set a password as requested from the manager tool.
 
-Lastly copy the `/wsn_app/media/` and `/wsn_app/static/` directories from the repository and paste them to your Django project in `/wsn/wsn_app` directory. 
+Lastly copy the `/wsn_app/media/` and `/wsn_app/static/` directories from the repository and paste them to your Django project in `/wsn/` and `/wsn/wsn_app/` directories respectively. The `media` folder contains the HTML template files for the project (including CSS and JavaScript scripts) while the `static` folder contains the static graphics such as the images for the application. 
 
 ### Integrate the LSTM predictors
 
-Run the provided notebook `/notebooks/lstm_train.ipynb` configuring the LSTM models for 30 minutes, 1 hour and 2 hours of look-ahead prediction using 2 hours of look-back window. Export the trained models named as `lstm-30min.keras`, `lstm-1hr.keras` and `lstm-2hr.keras` respectively. Store these models in `/wsn/wsn_app/predictors` directory. If you don't want to train your own models you can use the already pre-trained ones. You can find these models in `wsn/wsn_app/predictors` directory of the repository. 
+In order to make short-range predictions you must first provide the related Keras models. We provide with the required models in `/wsn/wsn_app/predictors/`. Else you can train your own models, save and export them by using the `/notebooks/lstm_train.ipynb` notebook. You must keep in mind that the application is configured to plot predictions for 30 minutes, 1 hour and 2 hours ahead, meaning that you must configure the `window` parameter appropriately. The exported models must be of type .keras zip with names as `lstm-30min.keras`, `lstm-1hr.keras` and `lstm-2hr.keras` respectively and stored in `/wsn/wsn_app/predictors` directory of your Django project.
+
+### Run the application 
+
+To run the application from your localhost, start the localhost Django server by issuing the following command.
+
+```
+    python3 manage.py runserver
+```
+
+Next open a browser and search for your localhost (http://localhost:8000/). The application must start. Log in and have fun!
 
 For more insights on how to use and further configure the application please refer to the related document (`/docs/meteo_stations - WSN web application user manual-V2.pdf`
 
 ## Hosting the application
 
-For hosting our application two different services are utilized. The commercial TopHost service (https://top.host) hosts our backend data handling and control system while the PythonAnywhere is utilized for deploying the web user interface application (https://www.pythonanywhere.com/). 
-
-## Visit our web application portal 
-
-**URL** : `https://uoawsn.pythonanywhere.com/`
+For hosting our application two different services are utilized. The commercial TopHost service (https://top.host) hosts our backend data handling and control system while the PythonAnywhere is utilized for deploying the web user interface application (https://www.pythonanywhere.com/). Every host has its own "rules" and further configurations to be made in your applications to be deployed. Read carefully their requirements. For information about hosting your Django application on Heroku, Ubuntu or PythonAnywhere server you can also contact us!
 
 ## For more information and insights on our project contact us
 
