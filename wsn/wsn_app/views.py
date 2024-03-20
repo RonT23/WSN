@@ -1,3 +1,10 @@
+'''
+    Creator : Stella Rafaela Maladaki
+    Date    : 8/9/2023
+    Project : Weather Station Network
+    Description : This script contains the main functions of the 
+                  Django GUI application. 
+'''
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth import login
 from django.shortcuts import render, redirect,get_object_or_404
