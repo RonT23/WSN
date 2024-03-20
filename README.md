@@ -15,8 +15,8 @@ The system is divided into five core components:
 The monitoring system is based on COTS and open-source components. Each monitoring system comprises a power generation module, a set of sensors and a network adapter.
 Power generation is based on solar radiation where the abundant solar energy is transformed into valuable electric energy via solar panels and stored/ distributed to the systems electronics. Also each unit is equipped with a rechargeable battery providing contiguous operation for at least 2 days per full charge at constant 12 VDC in case of cloudy days and nighttime. In Figure 1 two of our stations are depicted. 
 
-<p align="left" width="100%">
-    <img width="33%" src="./img/figure_1.jpg">
+<p align="center" width="100%">
+    <img src="./img/figure_1.jpg">
 </p>
 
 **Figure 1** - The monitoring twin units
@@ -39,7 +39,9 @@ Figure 2 depicts the architecture of the monitoring units and Table 1 contains t
 | Wind Speed    |      -          |      2.4  [km/h]     |   Cup Anemometer  |
 | Wind Direction|      -          |      22.5 [deg]      |    Wind Vane      |
 
-![Alt text](./img/figure_2.png)
+<p align="center" width="100%">
+    <img src="./img/figure_2.jpg">
+</p>
 
 **Figure 2** - The monitoring system architecture
 
@@ -58,7 +60,9 @@ Each weather station is a self-contained unit which communicates remotely with a
 | store_data   |  handles the incoming measurements from stations. Stores data both in the database and in a backup file       |
 | telemetry    |  handles TM packets coming from stations               |
 
-![Alt text](./img/figure_3.png)
+<p align="center" width="100%">
+    <img src="./img/figure_3.jpg">
+</p>
 
 **Figure 3** - The backend system architectrue
 
@@ -108,7 +112,9 @@ To utilize the package you need to instantiate a `Weather_Station_Backend_Contro
 
 LSTM networks are specialized variant of RNN known for their distinctive ability to capture long term dependencies and expose intricate patterns within sequential data efficiently making them appropriate for modeling the meteorological variables. An LSTM cell as depicted in Figure 4 is a more complex network than the simple Vanilla RNN. Its unique features however make it capable of resolving many of the problems present in classic RNN variations such as the vanishing and exploding gradients situations.
 
-![Alt text](./img/figure_4.png)
+<p align="center" width="100%">
+    <img src="./img/figure_4.jpg">
+</p>
 
 **Figure 4** - The LSTM cell architecture
 
@@ -122,7 +128,9 @@ You can contact us for a complete meteorological dataset, or you can properly mo
 
 Visualizing data is also a very important task. In out project we developed a web-based graphical application for accessing and visualizing the real-time measurements and predictions using the Django Python framework (https://www.djangoproject.com/). Figure 5 depicts the main page of our application. Visit our web-site in https://uoawsn.pythonanywhere.com/ .
 
-![Alt text](./img/figure_5.png)
+<p align="center" width="100%">
+    <img src="./img/figure_5.jpg">
+</p>
 
 **Figure 5** - The real-time monitoring and short-range forecasting web-gui
 
