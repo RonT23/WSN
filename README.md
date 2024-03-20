@@ -40,7 +40,7 @@ Figure 2 depicts the architecture of the monitoring units and Table 1 contains t
 | Wind Direction|      -          |      22.5 [deg]      |    Wind Vane      |
 
 <p align="center" width="100%">
-    <img src="./img/figure_2.jpg">
+    <img src="./img/figure_2.png">
 </p>
 
 **Figure 2** - The monitoring system architecture
@@ -61,7 +61,7 @@ Each weather station is a self-contained unit which communicates remotely with a
 | telemetry    |  handles TM packets coming from stations               |
 
 <p align="center" width="100%">
-    <img src="./img/figure_3.jpg">
+    <img src="./img/figure_3.png">
 </p>
 
 **Figure 3** - The backend system architectrue
@@ -113,7 +113,7 @@ To utilize the package you need to instantiate a `Weather_Station_Backend_Contro
 LSTM networks are specialized variant of RNN known for their distinctive ability to capture long term dependencies and expose intricate patterns within sequential data efficiently making them appropriate for modeling the meteorological variables. An LSTM cell as depicted in Figure 4 is a more complex network than the simple Vanilla RNN. Its unique features however make it capable of resolving many of the problems present in classic RNN variations such as the vanishing and exploding gradients situations.
 
 <p align="center" width="100%">
-    <img src="./img/figure_4.jpg">
+    <img src="./img/figure_4.png">
 </p>
 
 **Figure 4** - The LSTM cell architecture
@@ -129,7 +129,7 @@ You can contact us for a complete meteorological dataset, or you can properly mo
 Visualizing data is also a very important task. In out project we developed a web-based graphical application for accessing and visualizing the real-time measurements and predictions using the Django Python framework (https://www.djangoproject.com/). Figure 5 depicts the main page of our application. Visit our web-site in https://uoawsn.pythonanywhere.com/ .
 
 <p align="center" width="100%">
-    <img src="./img/figure_5.jpg">
+    <img src="./img/figure_5.png">
 </p>
 
 **Figure 5** - The real-time monitoring and short-range forecasting web-gui
