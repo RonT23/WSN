@@ -15,7 +15,9 @@ The system is divided into five core components:
 The monitoring system is based on COTS and open-source components. Each monitoring system comprises a power generation module, a set of sensors and a network adapter.
 Power generation is based on solar radiation where the abundant solar energy is transformed into valuable electric energy via solar panels and stored/ distributed to the systems electronics. Also each unit is equipped with a rechargeable battery providing contiguous operation for at least 2 days per full charge at constant 12 VDC in case of cloudy days and nighttime. In Figure 1 two of our stations are depicted. 
 
-![Alt text](./img/figure_1.jpg)
+<p align="left" width="100%">
+    <img width="33%" src="./img/figure_1.jpg">
+</p>
 
 **Figure 1** - The monitoring twin units
 
