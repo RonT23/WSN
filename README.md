@@ -30,14 +30,55 @@ TM/ TC and data transmission utilize three virtual TCP/IP over HTTP links, follo
 Figure 2 depicts the architecture of the monitoring units and Table 1 contains the sensors employed and their basic characteristics. The code for the controller can be found at `/station/wsn_main.ino`. In `/station/hardware_kicad.rar` you can find the design of the custom adapter board implemented to interface the Arduino Mega board, with the GSM/GPRS SIM900 shield, the sensors and the power lines respectively in a structured and well-organized manner. 
 
 **Table 1** - The COTS sensors
-| Parameter     | Range           | Accuracy/ Resolution | Device/ Component |
-|---------------|-----------------|----------------------|-------------------|
-| Humidity      |   0-100 [%]     |      +- 2  [%]       |     AM2315        |
-| Temperature   |  -20-80 [C]     |      +-0.1 [C]       |     AM2314        |
-| Pressure      | 0.3 - 110 [KPa] |      +-1  [hPa]      |     BMP280        |
-| Rainfall      |      -          |      0.29 [mm]       |   Tipping bucket  |
-| Wind Speed    |      -          |      2.4  [km/h]     |   Cup Anemometer  |
-| Wind Direction|      -          |      22.5 [deg]      |    Wind Vane      |
+<table align="center" width="100%">
+    <tr>
+        <th>Parameter</th>
+        <th>Range</th>
+        <th>Accuracy/ Resolution</th>
+        <th>Device/ Component</th>
+    </tr>
+    <tr>
+        <td>Humidity</td>
+        <td>0 - 100 [%]</td>
+        <td>+- 2 [%]</td>
+        <td>AM2315</td>
+    </tr>
+    <tr>
+        <td>Temperature</td>
+        <td>-20 - 80 [C]</td>
+        <td>+- 0.1 [C]</td>
+        <td>AM2315</td>
+    </tr>
+    
+    <tr>
+        <td>Pressure</td>
+        <td>0.3 - 110 [kPa]</td>
+        <td>+- 1 [kPa]</td>
+        <td>BMP280</td>
+    </tr>
+
+    <tr>
+        <td>Rainfall</td>
+        <td>-</td>
+        <td> 0.29 [mm]</td>
+        <td>Tipping bucket</td>
+    </tr>
+  
+    <tr>
+        <td>Wind Speed</td>
+        <td>-</td>
+        <td> 2.4 [km/h]</td>
+        <td>Cup anemometer</td>
+    </tr>
+    
+    <tr>
+        <td>Wind Direction</td>
+        <td>-</td>
+        <td> 22.5 [deg]</td>
+        <td>Wind Vane</td>
+    </tr>
+    
+</table>
 
 <p align="center" width="100%">
     <img src="./img/figure_2.png">
