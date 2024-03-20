@@ -30,6 +30,7 @@ TM/ TC and data transmission utilize three virtual TCP/IP over HTTP links, follo
 Figure 2 depicts the architecture of the monitoring units and Table 1 contains the sensors employed and their basic characteristics. The code for the controller can be found at `/station/wsn_main.ino`. In `/station/hardware_kicad.rar` you can find the design of the custom adapter board implemented to interface the Arduino Mega board, with the GSM/GPRS SIM900 shield, the sensors and the power lines respectively in a structured and well-organized manner. 
 
 **Table 1** - The COTS sensors
+
 <table align="center" width="100%">
     <tr>
         <th>Parameter</th>
@@ -37,49 +38,42 @@ Figure 2 depicts the architecture of the monitoring units and Table 1 contains t
         <th>Accuracy/ Resolution</th>
         <th>Device/ Component</th>
     </tr>
-    
     <tr>
-        <td>Humidity</td>
-        <td>0 - 100 [%]</td>
-        <td>+- 2 [%]</td>
-        <td>AM2315</td>
-    </tr>
-    
+        <td> Humidity </td>
+        <td> 0 - 100 [%] </td>
+        <td> +- 2 [%] </td>
+        <td> AM2315 </td>
+    </tr> 
     <tr>
         <td>Temperature</td>
         <td>-20 - 80 [C]</td>
         <td>+- 0.1 [C]</td>
         <td>AM2315</td>
     </tr>
-    
     <tr>
         <td>Pressure</td>
         <td>0.3 - 110 [kPa]</td>
         <td>+- 1 [kPa]</td>
         <td>BMP280</td>
     </tr>
-
     <tr>
         <td>Rainfall</td>
         <td>-</td>
         <td>0.29 [mm]</td>
         <td>Tipping bucket</td>
     </tr>
-  
     <tr>
         <td>Wind Speed</td>
         <td>-</td>
         <td>2.4 [km/h]</td>
         <td>Cup anemometer</td>
-    </tr>
-    
+    </tr>  
     <tr>
         <td>Wind Direction</td>
         <td>-</td>
         <td>22.5 [deg]</td>
         <td>Wind Vane</td>
     </tr>
-    
 </table>
 
 <p align="center" width="100%">
@@ -93,15 +87,42 @@ Figure 2 depicts the architecture of the monitoring units and Table 1 contains t
 Each weather station is a self-contained unit which communicates remotely with a backend data management and control system (server). The structure for the proposed backend system is depicted on Figure 3. The backend system comprises a database and a set of internet routines (we call them "handlers") that manage incoming requests from both station(s) and users. All handlers are implemented in PHP. You can find these handler routines at `/handlers` and use them to create the backend control and data management system. Table 2 contains the list of handlers and their functionality. The proposed server structure is provided in Tree 1. 
 
 **Table 2** - The WSN backend handlers 
-| Handler Name |        Description                                     |
-|--------------|--------------------------------------------------------|
-| daily_data   |  provides measurements collected for the current day   |
-|   stats      |  provides statistics measured on daily basis           |
-|  dataset     |  constructs a dataset for a selected time period       |
-|  cmd_rx      |  interfaces the station controller with the user       |
-|  cmd_tx      |  interfaces the station controller with the stations   |
-| store_data   |  handles the incoming measurements from stations. Stores data both in the database and in a backup file       |
-| telemetry    |  handles TM packets coming from stations               |
+
+<table align="center" width="100%">
+    <tr>
+        <th>Handler Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td> daily_data </td>
+        <td> provides measurements collected for the current day </td>
+    </tr> 
+    <tr>
+        <td>stats</td>
+        <td>provides statistics measured on daily basis</td>
+    </tr>
+    <tr>
+        <td>dataset</td>
+        <td>constructs a dataset for a selected time period</td>
+    </tr>
+    <tr>
+        <td>cmd_rx</td>
+        <td>interfaces the station controller with the user</td>
+    </tr>
+    <tr>
+        <td>cmd_tx</td>
+        <td>interfaces the station controller with the stations</td>
+    </tr>  
+    <tr>
+        <td>store_data</td>
+        <td>handles the incoming measurements from stations. Stores data both in the database and in a backup file </td>
+    </tr>
+    <tr>
+        <td>telemetry</td>
+        <td>handles TM packets coming from stations</td>
+    </tr>
+        
+</table>
 
 <p align="center" width="100%">
     <img src="./img/figure_3.png">
