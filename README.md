@@ -37,12 +37,14 @@ Figure 2 depicts the architecture of the monitoring units and Table 1 contains t
         <th>Accuracy/ Resolution</th>
         <th>Device/ Component</th>
     </tr>
+    
     <tr>
         <td>Humidity</td>
         <td>0 - 100 [%]</td>
         <td>+- 2 [%]</td>
         <td>AM2315</td>
     </tr>
+    
     <tr>
         <td>Temperature</td>
         <td>-20 - 80 [C]</td>
@@ -60,21 +62,21 @@ Figure 2 depicts the architecture of the monitoring units and Table 1 contains t
     <tr>
         <td>Rainfall</td>
         <td>-</td>
-        <td> 0.29 [mm]</td>
+        <td>0.29 [mm]</td>
         <td>Tipping bucket</td>
     </tr>
   
     <tr>
         <td>Wind Speed</td>
         <td>-</td>
-        <td> 2.4 [km/h]</td>
+        <td>2.4 [km/h]</td>
         <td>Cup anemometer</td>
     </tr>
     
     <tr>
         <td>Wind Direction</td>
         <td>-</td>
-        <td> 22.5 [deg]</td>
+        <td>22.5 [deg]</td>
         <td>Wind Vane</td>
     </tr>
     
