@@ -1,6 +1,7 @@
 # WSN Project : 
 ## An integrated, automated and modular approach for real-time weather monitoring of surface meteorological variables and short-range forecasting using machine learning
 
+
 Weather monitoring and forecasting plays a crucial role in multiple aspects of our everyday lives. This project sets the initiatives for the implementation of a fully automated system for real-time weather monitoring of the fundamental meteorological parameters and their short-range forecasting. 
 
 The system is divided into five core components:
