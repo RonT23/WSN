@@ -8,18 +8,17 @@ const int C_RECONNECT_REPEAT_TIME_MS = 500;
 // time to wait before executing again the main process
 const unsigned long C_DELAY_TIME_MS = 5000;
 
-const String C_STATION_ID = "st03";
+const String C_STATION_ID = "stxx";
 
-const char* C_WIFI_SSID   = "Huawei_yXD8xy";
-const char* C_WIFI_PSWD   = "XNA6SvmG";
+const char* C_WIFI_SSID   = "<your SSID>";
+const char* C_WIFI_PSWD   = "<your password>";
 
 // Transmit to the receive interface
 // Receive from the transmit interface
-const String cmdTrans_handler = "http://uoa-wsn.i-met.gr/station/command/cmdRec.php?st=" + C_STATION_ID;
-const String cmdRec_handler   = "http://uoa-wsn.i-met.gr/station/command/cmdTrans.php?station=" + C_STATION_ID;
-
-const String telemetry_handler = "http://uoa-wsn.i-met.gr/station/telemtry.php?";
-const String store_data_handler = "http://uoa-wsn.i-met.gr/station/store_data.php?";
+const String cmdTrans_handler   = "<path to your server>/station/command/cmdRec.php?st=" + C_STATION_ID;
+const String cmdRec_handler     = "<path to your server>/station/command/cmdTrans.php?station=" + C_STATION_ID;
+const String telemetry_handler  = "<path to your server>/station/telemtry.php?";
+const String store_data_handler = "<path to your server>/station/store_data.php?";
 
 String cmdTrans = "";
 
@@ -177,8 +176,7 @@ void loop() {
                 Serial.println("[STATUS] Command : Reset Arduino");
               #endif
               
-              // This translates to reset the arduino command
-              Serial.println("0");
+              Serial.println(payload);
 
               // replace the existing command with $1, 0$ for nominal operation
               cmdTrans = cmdTrans_handler + "&cmd=1&arg=0";
@@ -202,6 +200,7 @@ void loop() {
               #ifndef SILENT
                 Serial.println("[STATUS] NOP");
               #endif
+              Serial.println(payload);
 
               break;
 
@@ -209,17 +208,16 @@ void loop() {
               #ifndef SILENT
                 Serial.println("[STATUS] NOP");
               #endif
-              
+              Serial.println(payload);
+
               break;
 
             case 3:
-
               #ifndef SILENT
                 Serial.println("[STATUS] Command : Set GSM/ WiFi Transmission");
               #endif
 
-              // Activate or deactivate the GSM serial channel
-              Serial.println(cmd_arg);
+              Serial.println(payload);
 
               // set the global variable 
               if (cmd_arg == 1) {
@@ -290,7 +288,6 @@ void loop() {
           }
 
           http.begin(input_string.c_str());
-          httpResponseCode = http.GET();
           
           input_string = "";
           is_data_input = !is_data_input; // next type of data is comming
@@ -305,6 +302,8 @@ void loop() {
                 break;
             }
           }
+
+          http.end();
 
         } else {
           // reset the input data container 

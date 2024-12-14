@@ -3,19 +3,23 @@
 #include <Adafruit_AM2315.h>
 #include <Adafruit_BMP280.h>
 
+#define SILENT
+
 Adafruit_AM2315 am2315;
 Adafruit_BMP280 bmp280;
 
 SoftwareSerial gsmGprs(2, 3); 
 
-const unsigned int BMP_I2C_ADDR 0x76 // bmp280
-//const unsigned int BMP_I2C_ADDR 0x77 // bmp180
+#define C_GSM_MODE  0
+#define C_WIFI_MODE 1
+
+const unsigned BMP_I2C_ADDR = 0x76; // bmp280
+//const unsigned BMP_I2C_ADDR = 0x77 // bmp180
 
 // server interface
-const String BASE_URL               = "https://your/server/url";
+const String BASE_URL               = "<your servers base url>";
 const String TELEMETRY_HANDLER_PATH = "/telemetry.php?";
 const String DATA_HANDLER_PATH      = "/store_data.php?";
-const String COMMAD_HANDLER_PATH    = "/cmd_tx.php?";
 
 const String STATION_ID        = "st00"; 
 
@@ -56,6 +60,10 @@ const int DEBOUNCE_TIME = 100;
 volatile int windTickCount = 0;
 volatile int rainTickCount = 0;
 
+void reset_board() {
+  asm volatile("jmp 0x0000");
+}
+
 void ISR_windTickCnt(void){
   if( (long)(micros() - LAST_READ_ANEM) >= DEBOUNCE_TIME){
     windTickCount += 1;
@@ -77,17 +85,24 @@ unsigned long init_time = 0.0;
 unsigned long fin_time  = 0.0;
 unsigned int op_mode = 1.0;
 
-
+String input_string = "";
+int transmission_mode = C_WIFI_MODE;
 
 void AM2315_temperatureAndHumidity(float *temperature, float *humidity){
-  if(!am2315.readTemperatureAndHumidity(temperature, humidity)){ Serial.println("[Error] Failed to read from AM2315"); }  
+  if(!am2315.readTemperatureAndHumidity(temperature, humidity)){ 
+    #ifndef SILENT
+      Serial.println("[Error] Failed to read from AM2315"); 
+    #endif
+  }  
 }
 
 float windDirection(void){
   int analog_val = analogRead(WIND_DIR_PIN);
   int values = sizeof(DIR_ANGLE) / sizeof(float);
   for(int i=0; i<values; i++){
-    if( (analog_val >= DIR_VAL_MIN[i]) && (analog_val <= DIR_VAL_MAX[i]) ){ return DIR_ANGLE[i]; }
+    if( (analog_val >= DIR_VAL_MIN[i]) && (analog_val <= DIR_VAL_MAX[i]) ){ 
+      return DIR_ANGLE[i]; 
+    }
   }
 }
 
@@ -122,7 +137,10 @@ void gsm_set(String func){
 }
 
 void GPRS_enable(void){
-  Serial.println("[Info] Enabling GPRS");
+  #ifndef SILENT
+    Serial.println("[Info] Enabling GPRS");
+  #endif
+
   gsm_set("AT+CFUN=1");
   gsm_set("AT+CGATT=1");
   gsm_set("AT+SAPBR=3,1,\"Contype\",\"GPRS\"");
@@ -130,11 +148,17 @@ void GPRS_enable(void){
   gsm_set("AT+SAPBR=1,1");
   gsm_set("AT+SAPBR=2,1");
   gsm_set("AT+CLTS=1");
-  Serial.println("[Info] GPRS ready");
+
+  #ifndef SILENT
+    Serial.println("[Info] GPRS ready");
+  #endif
 }
 
 void HTTPtransfer(const String BaseURL, const String path, String val){
-  Serial.println("[Info] HTTP transmission");
+  #ifndef SILENT
+    Serial.println("[Info] HTTP transmission");
+  #endif
+
   gsm_set("AT+HTTPINIT");
   gsm_set("AT+HTTPPARA=\"CID\",1");
   
@@ -148,57 +172,143 @@ void HTTPtransfer(const String BaseURL, const String path, String val){
   gsm_set("AT+HTTPACTION=0");
   gsm_set("AT+HTTPTERM");
   gsm_set("AT+CIPSHUT");
-  Serial.println("[Info] Transmission Complete");
+  
+  #ifndef SILENT
+    Serial.println("[Info] Transmission Complete");
+  #endif
 }
 
+bool parseCmdArg(String input_str, int &cmd, int &arg) {
+  // Check if the string starts with '$' and ends with '$'
+  if (!input_str.startsWith("$") || !input_str.endsWith("$")) {
+    return false;
+  }
 
+  // Remove the leading '$' and trailing '$'
+  input_str = input_str.substring(1, input_str.length() - 1);
+
+  // Find the position of the comma
+  int commaIndex = input_str.indexOf(",");
+  if (commaIndex == -1) {
+    return false; 
+  }
+
+  // Extract the command and argument substrings
+  String cmdStr = input_str.substring(0, commaIndex);
+  String argStr = input_str.substring(commaIndex + 1);
+
+  cmdStr.trim();
+  argStr.trim();
+
+  // Convert the substrings to integers
+  cmd = cmdStr.toInt();
+  arg = argStr.toInt();
+
+  return true;
+}
+
+void transmit_values(int transmission_mode, String server_url, String handler, String val) {
+  switch(transmission_mode){
+    case C_WIFI_MODE :
+      // simply send to main serial interface
+      Serial.println(val);
+      break;
+    
+    case C_GSM_MODE:
+      // program GSM module
+      GPRS_enable();
+      HTTPtransfer(server_url, handler, val);
+      break;
+    
+    default:
+      // by default use the main serial output
+      Serial.println(val);
+      break;
+  }  
+}
 
 void setup() {
   Serial.begin(115200);
   
-  while(!Serial){ delay(100); }
+  while(!Serial){ 
+    delay(100); 
+  }
 
-  Serial.println("[Info] System Started");
-
+  #ifndef SILENT
+    Serial.println("[Info] System Started");
+  #endif
+  
   if(!am2315.begin()){ 
-    Serial.println("[Error] AM2315 Sensor Not Found!"); 
+    #ifndef SILENT
+      Serial.println("[Error] AM2315 Sensor Not Found!"); 
+    #endif
+
     while(!am2315.begin()){}
   }
   delay(2000);
-  Serial.println("[Info] AM2315 Started");  
+  
+  #ifndef SILENT
+    Serial.println("[Info] AM2315 Started");  
+  #endif 
 
   if(!bmp280.begin(BMP_I2C_ADDR)){ 
-    Serial.println("[Error] BMP280 Sensor Not Found!"); 
+    #ifndef SILENT
+      Serial.println("[Error] BMP280 Sensor Not Found!"); 
+    #endif 
     while(!bmp280.begin(BMP_I2C_ADDR)){}  
   }
 
   delay(1000);
-  Serial.println("[Info] BMP280 Started");
-  
+
+  #ifndef SILENT
+    Serial.println("[Info] BMP280 Started");
+  #endif
+
   pinMode(WIND_DIR_PIN, INPUT);
-  Serial.println("[Info] Wind Direction Sensor Started");
+  
+  #ifndef SILENT
+    Serial.println("[Info] Wind Direction Sensor Started");
+  #endif
 
   pinMode(WIND_SPD_PIN, INPUT);
   attachInterrupt(digitalPinToInterrupt(WIND_SPD_PIN), ISR_windTickCnt, FALLING);
-  Serial.println("[Info] Anemometer Started");
+  
+  #ifndef SILENT
+    Serial.println("[Info] Anemometer Started");
+  #endif 
 
   pinMode(RAIN_GUG_PIN, INPUT);
   attachInterrupt(digitalPinToInterrupt(RAIN_GUG_PIN), ISR_rainTickCnt, RISING);
-  Serial.println("[Info] Rain Gauge Started");
+  
+  #ifndef SILENT
+    Serial.println("[Info] Rain Gauge Started");
+  #endif
 
   pinMode(CIN_REGULATED, INPUT);
-  Serial.println("[Info] Current Monitor Started");
+  
+  #ifndef SILENT
+    Serial.println("[Info] Current Monitor Started");
+  #endif
 
   pinMode(VIN_REGULATED, INPUT);
-  Serial.println("[Info] Internal Voltage Monitor Started");
+  
+  #ifndef SILENT
+    Serial.println("[Info] Internal Voltage Monitor Started");
+  #endif
 
   pinMode(VIN_SOLAR, INPUT);
-  Serial.println("[Info] Solar Panel Voltage Monitor Started");
+  
+  #ifndef SILENT
+    Serial.println("[Info] Solar Panel Voltage Monitor Started");
+  #endif
 
   gsmGprs.begin(19200);
   
   delay(1000);
-  Serial.println("[Info] Initializing GSM Module...");
+
+  #ifndef SILENT
+    Serial.println("[Info] Initializing GSM Module...");
+  #endif 
 
   pinMode(GSM_GPRS_PWR, OUTPUT);
   gsmGprs.flush();
@@ -207,10 +317,11 @@ void setup() {
   delay(10000);
   
   gsmGprs.flush();
-  Serial.println("[Info] GSM Module Initialized!");
+
+  #ifndef SILENT
+    Serial.println("[Info] GSM Module Initialized!");
+  #endif
 }
-
-
 
 void loop() {
   
@@ -227,7 +338,50 @@ void loop() {
   float internal_temperature = 0.0;
 
   String val = "";
-  
+
+  // read and decode command
+  while (Serial.available() > 0) {
+    char incomingChar = (char)Serial.read();    
+    if (incomingChar == '\n') { // command line finished           
+      #ifndef SILENT
+        Serial.print("[INFO] Data input : ");
+        Serial.println(input_string);
+      #endif
+
+      int cmd, arg;
+      parseCmdArg(input_string, cmd, arg);
+      input_string = "";
+
+      #ifndef SILENT
+        Serial.print("[INFO] Received input command: ");
+        Serial.println(cmd + " ," + arg);
+      #endif
+
+      switch(cmd) {
+        case 0: 
+          reset_board();
+          break;
+        case 1:
+        case 2:
+        case 3:
+          switch(arg){
+            case 0:
+              transmission_mode = C_GSM_MODE;
+              break;
+            case 1:
+              transmission_mode = C_WIFI_MODE;
+              break;
+            default:
+              transmission_mode = C_WIFI_MODE;
+              break;
+          }
+      }
+    } else {
+      // reset the input data container 
+      input_string += incomingChar;
+    }
+  }
+
   if(state){
     init_time = millis();
     state = false;
@@ -235,7 +389,7 @@ void loop() {
   }
 
   unsigned long cur_dtime = millis() - fin_time;
-  
+
   if(cur_dtime >= (long)SAMPLE_PERIOD*5){
 
     // read sensors
@@ -247,11 +401,14 @@ void loop() {
 
     // transmit data 
     val = "&st="+STATION_ID+"&h="+String(air_rel_humidity)+"&t="+String(air_temperature)+"&p="+String(air_pressure)+"&d="+String(wind_direction)+"&r="+String(rain_rate)+"&v="+String(wind_speed);
-    Serial.print("[Info] HTTP Value : "); Serial.println(val);
 
-    GPRS_enable();
-    HTTPtransfer(BASE_URL, DATA_HANDLER_PATH, val);
-    
+    #ifndef SILENT
+      Serial.print("[Info] HTTP Value : "); 
+      Serial.println(val);
+    #endif
+
+    transmit_values(transmission_mode, BASE_URL, DATA_HANDLER_PATH, val);
+
     // read station state
     internal_temperature = bmp280.readTemperature();
     internal_voltage = voltageMonitor(VIN_REGULATED, R6, R7);
@@ -259,26 +416,31 @@ void loop() {
     internal_current = currentMonitor(CIN_REGULATED, Vadc0, I0);
 
     val = "&st="+STATION_ID+"&t="+String(internal_temperature)+"&v="+String(internal_voltage)+"&i="+String(internal_current)+"&sv="+String(solar_panel_voltage)+"&hb="+String(heartbeat)+"&m="+String(op_mode);
-    Serial.print("[Info] HTTP Value : "); Serial.println(val);
-
-    GPRS_enable();
-    HTTPtransfer(BASE_URL, TELEMETRY_HANDLER_PATH, val);
     
+    #ifndef SILENT
+      Serial.print("[Info] HTTP Value : "); 
+      Serial.println(val);
+    #endif
+
+    transmit_values(transmission_mode, BASE_URL, TELEMETRY_HANDLER_PATH, val);
+
     // update state
     state = true;
     fin_time = millis();
 
     // debugging serial print
-    Serial.print("[Info] Air Temperature (C) : "); Serial.println(air_temperature); 
-    Serial.print("[Info] Air Humidity    (%) : "); Serial.println(air_rel_humidity);
-    Serial.print("[Info] Wind Direction (deg): "); Serial.println(wind_direction);
-    Serial.print("[Info] Wind Speed  (km/hr) : "); Serial.println(wind_speed);
-    Serial.print("[Info] Rain Rate   (mm/hr) : "); Serial.println(rain_rate);
-    Serial.print("[Info] Barometric Pressure (hpa): "); Serial.println(air_pressure);
-    Serial.print("[Info] Internal voltage (V) : "); Serial.println(internal_voltage);
-    Serial.print("[Info] Solar Panel voltage (V) : "); Serial.println(solar_panel_voltage);
-    Serial.print("[Info] Internal Current (A) : "); Serial.println(internal_current);
-    Serial.print("[Info] Internal Temperature (C)"); Serial.println(internal_temperature);
+    #ifndef SILENT
+      Serial.print("[Info] Air Temperature (C) : "); Serial.println(air_temperature); 
+      Serial.print("[Info] Air Humidity    (%) : "); Serial.println(air_rel_humidity);
+      Serial.print("[Info] Wind Direction (deg): "); Serial.println(wind_direction);
+      Serial.print("[Info] Wind Speed  (km/hr) : "); Serial.println(wind_speed);
+      Serial.print("[Info] Rain Rate   (mm/hr) : "); Serial.println(rain_rate);
+      Serial.print("[Info] Barometric Pressure (hpa): "); Serial.println(air_pressure);
+      Serial.print("[Info] Internal voltage (V) : "); Serial.println(internal_voltage);
+      Serial.print("[Info] Solar Panel voltage (V) : "); Serial.println(solar_panel_voltage);
+      Serial.print("[Info] Internal Current (A) : "); Serial.println(internal_current);
+      Serial.print("[Info] Internal Temperature (C)"); Serial.println(internal_temperature);
+    #endif
   }
 }
 
